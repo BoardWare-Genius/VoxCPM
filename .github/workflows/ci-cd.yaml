@@ -7,7 +7,7 @@ on:
   #   branches: [ main ]
 
 env:
-  VERSION: 0.0.1
+  VERSION: 0.0.2
   REGISTRY: https://harbor.bwgdi.com
   REGISTRY_NAME: harbor.bwgdi.com
   IMAGE_NAME: voxcpmtts 
