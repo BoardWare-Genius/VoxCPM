@@ -29,7 +29,7 @@ https://github.com/BoardWare-Genius/VoxCPM
 ```bash
 docker pull harbor.bwgdi.com/library/voxcpmtts:0.0.2
 
-docker run -d --restart always -p 5001:5000 --gpus all --mount type=bind,source=/Workspace/NAS11/model/Voice/VoxCPM,target=/models harbor.bwgdi.com/library/voxcpmtts:0.0.2
+docker run -d --restart always -p 5001:5000 --gpus '"device=0"' --mount type=bind,source=/Workspace/NAS11/model/Voice/VoxCPM,target=/models harbor.bwgdi.com/library/voxcpmtts:0.0.2
 ```
 
 # Usage
