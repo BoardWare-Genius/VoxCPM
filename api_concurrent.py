@@ -25,7 +25,7 @@ class VoxCPMDemo:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"🚀 Running on device: {self.device}")
         self.voxcpm_model: Optional[voxcpm.VoxCPM] = None
-        self.default_local_model_dir = "/models/VoxCPM1.5/"
+        self.default_local_model_dir = os.environ.get("VOXCPM_MODEL_ID", "/models/VoxCPM1.5/")
 
     def _resolve_model_dir(self) -> str:
         if os.path.isdir(self.default_local_model_dir):
@@ -136,7 +136,8 @@ MAX_GPU_CONCURRENT = int(os.environ.get("MAX_GPU_CONCURRENT", "1"))
 gpu_semaphore = asyncio.Semaphore(MAX_GPU_CONCURRENT)
 
 # Use a thread pool for running blocking (CPU/GPU-bound) code.
-executor = ThreadPoolExecutor(max_workers=2)
+MAX_CPU_WORKERS = int(os.environ.get("VOXCPM_CPU_WORKERS", "2"))
+executor = ThreadPoolExecutor(max_workers=MAX_CPU_WORKERS)
 
 @app.on_event("shutdown")
 def shutdown_event():
@@ -159,6 +160,7 @@ async def generate_tts(
     retry_badcase_ratio_threshold: float = Form(6.0),
     prompt_wav: Optional[UploadFile] = None,
 ):
+
     try:
         prompt_path = None
         if prompt_wav:
@@ -266,4 +268,5 @@ async def root():
     return {"message": "VoxCPM API running 🚀", "endpoints": ["/generate_tts"]}
 
 if __name__ == "__main__":
-    uvicorn.run("api_concurrent:app", host="0.0.0.0", port=5000, workers=4)
+    uvicorn_workers = int(os.environ.get("VOXCPM_UVICORN_WORKERS", "1"))
+    uvicorn.run("api_concurrent:app", host="0.0.0.0", port=5000, workers=uvicorn_workers)

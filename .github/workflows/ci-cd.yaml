@@ -1,20 +1,18 @@
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
-
+name: Build container
 env:
-  VERSION: 0.0.2
+  VERSION: 0.0.3
   REGISTRY: https://harbor.bwgdi.com
   REGISTRY_NAME: harbor.bwgdi.com
-  IMAGE_NAME: voxcpmtts 
-
+  REGISTRY_PATH: library
+  DOCKER_NAME: voxcpmtts
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 jobs:
   build-docker:
-    runs-on: ubuntu-latest
+    runs-on: builder-ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -32,4 +30,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.REGISTRY_NAME }}/library/${{env.IMAGE_NAME}}:${{ env.VERSION }}
+          tags: ${{ env.REGISTRY_NAME }}/${{ env.REGISTRY_PATH }}/${{ env.DOCKER_NAME }}:${{ env.VERSION }}

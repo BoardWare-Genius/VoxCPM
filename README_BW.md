@@ -6,10 +6,17 @@ https://github.com/BoardWare-Genius/VoxCPM
 
 | Version | Date       | Summary                         |
 |---------|------------|---------------------------------|
+| 0.0.3   | 2026-02-09 | Optimized configuration & Model support |
 | 0.0.2   | 2026-01-21 | Supports streaming               |
 | 0.0.1   | 2026-01-20 | Initial version                 |
 
 ### 🔄 Version Details
+
+#### 🆕 0.0.3 – *2026-02-09*
+- ✅ **Configuration & Deployment**
+  - Supports configuring model path via `VOXCPM_MODEL_ID`
+  - Supports configuring CPU workers via `VOXCPM_CPU_WORKERS`
+  - Supports configuring Uvicorn workers via `VOXCPM_UVICORN_WORKERS`
 
 #### 🆕 0.0.2 – *2026-01-21*
 
@@ -27,9 +34,20 @@ https://github.com/BoardWare-Genius/VoxCPM
 
 # Start
 ```bash
-docker pull harbor.bwgdi.com/library/voxcpmtts:0.0.2
+docker pull harbor.bwgdi.com/library/voxcpmtts:0.0.3
 
-docker run -d --restart always -p 5001:5000 --gpus '"device=0"' --mount type=bind,source=/Workspace/NAS11/model/Voice/VoxCPM,target=/models harbor.bwgdi.com/library/voxcpmtts:0.0.2
+# Run with custom configuration
+# -e VOXCPM_MODEL_ID: Path to the model directory inside container
+# -e VOXCPM_CPU_WORKERS: Number of threads for CPU-bound tasks
+# -e VOXCPM_UVICORN_WORKERS: Number of uvicorn workers
+# -e MAX_GPU_CONCURRENT: Max concurrent GPU tasks
+docker run -d --restart always -p 5001:5000 --gpus '"device=0"' \
+  -e VOXCPM_MODEL_ID="/models/VoxCPM1.5/" \
+  -e VOXCPM_CPU_WORKERS="2" \
+  -e VOXCPM_UVICORN_WORKERS="1" \
+  -e MAX_GPU_CONCURRENT="1" \
+  --mount type=bind,source=/Workspace/NAS11/model/Voice/VoxCPM,target=/models \
+  harbor.bwgdi.com/library/voxcpmtts:0.0.3
 ```
 
 # Usage
